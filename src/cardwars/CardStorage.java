@@ -15,21 +15,18 @@ import java.util.stream.Collectors;
 
 public class CardStorage {
     
-    private Map<Integer, Card> Cards = new HashMap<Integer, Card>();
+    private Map<String, Card> Cards = new HashMap<String, Card>();
 
     public CardStorage(HashSet<Card> cards) {
-        Cards = cards.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+        Cards = cards.stream().collect(Collectors.toMap(x -> x.getName(), x -> x));
     }
     
-    public Card getCard(int id) {
-        return Cards.get(id);
+    public boolean hasCard(String name) {
+        return Cards.containsKey(name);
     }
     
-    public Card getCardDebug(String name) {
-        for(Card c : Cards.values())
-            if(c.getName().equalsIgnoreCase(name))
-                return c;
-        return null;
+    public Card getCard(String name) {
+        return Cards.getOrDefault(name, null);
     }
     
     public Collection<Card> getAllCards() {

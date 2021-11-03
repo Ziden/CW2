@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cardwars;
 
 import cardwars.cards.Card;
@@ -18,8 +13,19 @@ public class CardList {
 
     public static HashSet<Card> Generate() {
         return new CardBuilder()
-                .createCard("Barbaro", Rarity.COMMON).thatGivesItem(Material.IRON_SWORD)
-                .createCard("Bolas de Fogo", Rarity.COMMON).thatGivesItem(Material.FIRE_CHARGE)
+                
+                // LVL 1
+                .createCard("Ferreiro", Rarity.Comum).thatGivesItems(Material.IRON_ORE, 64)
+                .createCard("Minerador", Rarity.Incomum).thatGivesItems(Material.DIAMOND_PICKAXE, 1)
+                .createCard("Lenhador", Rarity.Comum).thatGivesItems(Material.OAK_LOG, 64).withUses(3)
+                .createCard("Bolas de Fogo", Rarity.Comum).thatGivesItems(Material.FIRE_CHARGE).withUses(20)
+                .createCard("Pedras Preciosas Brutas", Rarity.Comum).thatGivesItems(Material.DIAMOND, 3)
+                .createCard("Pedregulhos", Rarity.Comum).thatGivesItems(Material.BRICK, 64).withUses(2)
+                .createCard("Catador de Latinha", Rarity.Comum).dropsFromBlockMultiplied(Material.IRON_ORE, 3)  
+                .createCard("Catador de Latinha", Rarity.Comum).dropsFromBlockMultiplied(Material.IRON_ORE, 3) 
+                .createCard("Barbaro", Rarity.Comum).thatGivesItems(Material.IRON_SWORD).withUses(3)
+         
+                
                 .GetCards();
     }
 }

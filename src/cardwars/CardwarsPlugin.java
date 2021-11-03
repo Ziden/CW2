@@ -6,7 +6,7 @@
 package cardwars;
 
 import cardwars.cards.Card;
-import cardwars.commands.Comando;
+import cardwars.commands.MainCmd;
 import cardwars.commands.list.CardsCmd;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,19 +23,23 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class CardwarsPlugin extends JavaPlugin {
 
+    public static JavaPlugin _i;
     public static CardStorage storage;
     private static CommandMap cmap;
     
     public void onEnable() {
-        cmap = (CommandMap) ((CraftServer) Bukkit.getServer()).getCommandMap();
+        _i = this;
+        cmap = (CommandMap) ((CraftServer) Bukkit.getServer()).getCommandMap();  
         addCommand(new CardsCmd());
+        Bukkit.getServer().getPluginManager().registerEvents(new CardListener(), this);
         
+        // TODO: Move the cardlist to the minigame plugin
         storage = new CardStorage(CardList.Generate());
         System.out.println("Loaded " + storage.getAllCards().size() + " cards");
     }
     
-      public void addCommand(Comando cmd) {
-        cmap.register(cmd.cmd, cmd);
+      public void addCommand(MainCmd cmd) {
+        cmap.register(cmd.getName(), cmd);
         cmd.setExecutor(this);
     }
     

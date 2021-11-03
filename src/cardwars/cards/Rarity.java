@@ -10,5 +10,24 @@ package cardwars.cards;
  * @author gabri
  */
 public enum Rarity {
-    COMMON, UNCOMMON, RARE, EPIC, LEGENDARY
+
+    Comum("§f"),
+    Incomum("§a"),
+    Rara("§9"),
+    Epica("§d"),
+    Lendaria("§e");
+
+    public String color;
+
+    private Rarity(String cor) {
+        this.color = cor;
+    }
+
+    public static String getIcon() {
+        return "♦";
+    }
+    
+    public String getColoredIcon() {
+        return color + getIcon();
+    }
 }

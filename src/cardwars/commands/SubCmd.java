@@ -1,4 +1,3 @@
-
 package cardwars.commands;
 
 import org.bukkit.Bukkit;
@@ -19,6 +18,8 @@ public abstract class SubCmd {
     public SubCmd(String cmd, ExecutorType type) {
         this.cmd = cmd;
         this.type = type;
+        
+        
     }
 
     protected void showSubCommands(CommandSender cs, String mainCmd) {
@@ -26,11 +27,7 @@ public abstract class SubCmd {
         cs.sendMessage(ChatColor.YELLOW + "|");
         for (SubCmd cmd : subs) {
             if (cmd.type != ExecutorType.OP) {
-                if (cmd.type.equals(ExecutorType.LEADER)) {
-                    cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.GREEN + " - /" + mainCmd + " " + cmd.cmd + " §6(Lider)");
-                } else {
-                    cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.GREEN + " - /" + mainCmd + " " + cmd.cmd);
-                }
+                cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.GREEN + " - /" + mainCmd + " " + cmd.cmd);
             } else if (cs.isOp()) {
                 cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.BLUE + " - /" + mainCmd + " " + cmd.cmd + " (Op)");
             }
@@ -59,20 +56,6 @@ public abstract class SubCmd {
             }
         }
 
-        if (type == ExecutorType.LEADER) {
-             cs.sendMessage("§cVocê não tem uma guilda para executar esse comando.");
-                return false;
-            /*
-            if (ClanLand.manager.getClanPlayer((Player) cs) == null) {
-                cs.sendMessage("§cVocê não tem uma guilda para executar esse comando.");
-                return false;
-            } else if (!ClanLand.manager.getClanPlayer((Player) cs).isLeader()) {
-                cs.sendMessage("§cVocê não é lider da guilda para executar esse comando");
-                return false;
-            }
-*/
-        }
-
         if (type == ExecutorType.OPCONSOLE) {
             if (cs instanceof Player) {
                 if (!cs.isOp()) {
@@ -91,7 +74,6 @@ public abstract class SubCmd {
         execute(cs, args);
         return true;
     }
-
 
     public void executeBase(CommandSender cs, String[] args, String mainCmd) {
         if (args.length >= 2) {

@@ -1,6 +1,7 @@
 package cardwars;
 
 import cardwars.cards.Card;
+import cardwars.cards.PutCardInItemEvent;
 import cardwars.cards.UseCardEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -8,7 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.server.MapInitializeEvent;
+import org.bukkit.map.MapView;
 
 
 public class CardListener implements Listener {
@@ -26,6 +30,24 @@ public class CardListener implements Listener {
         UseCardEvent useEv = new UseCardEvent(ev.getPlayer(), c, ev.getItem());
         if(c.runHook(useEv)) {
              Bukkit.getServer().getPluginManager().callEvent(useEv);
+        }
+    }
+    
+    @EventHandler
+    public void onMapInitialize(MapInitializeEvent e) {
+        MapView mapView = e.getMap();
+    }
+    
+    @EventHandler
+    public void inventory(InventoryClickEvent ev) {
+        if(ev.getCursor() == null) return;
+        
+        Card c = Card.fromItemStack(ev.getCursor());
+        PutCardInItemEvent newEv = new PutCardInItemEvent((Player)ev.getWhoClicked(), c, ev.getCurrentItem());
+        if(c != null) {
+            if(c.runHook(ev)) {
+                 Bukkit.getServer().getPluginManager().callEvent(newEv);
+            }
         }
     }
     

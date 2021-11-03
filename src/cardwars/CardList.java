@@ -22,7 +22,7 @@ public class CardList {
                 .createCard("Pedras Preciosas Brutas", Rarity.Comum).thatGivesItems(Material.DIAMOND, 3)
                 .createCard("Pedregulhos", Rarity.Comum).thatGivesItems(Material.BRICK, 64).withUses(2)
                 .createCard("Catador de Latinha", Rarity.Comum).dropsFromBlockMultiplied(Material.IRON_ORE, 3)  
-                .createCard("Catador de Latinha", Rarity.Comum).dropsFromBlockMultiplied(Material.IRON_ORE, 3) 
+
                 .createCard("Barbaro", Rarity.Comum).thatGivesItems(Material.IRON_SWORD).withUses(3)
          
                 

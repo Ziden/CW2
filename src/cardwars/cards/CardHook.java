@@ -12,5 +12,5 @@ import org.bukkit.event.Event;
  * @author gabri
  */
 public interface CardHook<E extends Event> {
-    void execute(E e);
+    boolean execute(E e);
 }

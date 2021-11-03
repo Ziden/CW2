@@ -55,21 +55,22 @@ public class CardBuilder {
                 e.getPlayer().getInventory().addItem(new ItemStack(mat));
                 card.setDescription("Recebe 1 " + mat.name());
             }
+            return true;
         });
         return this;
     }
 
     public CardBuilder dropsFromBlockMultiplied(Material m, int mult) {
-        card.addDescription(mult+ "x drops de " + m.name());
+        card.setDescription(mult+ "x drops de " + m.name());
         card.addHook((CardHook<BlockBreakEvent>) e -> {
             if (e.getBlock().getType() == m) {
                 for (ItemStack ss : e.getBlock().getDrops()) {
                     for (int x = 0; x < mult - 1; x++) {
                         e.getBlock().getWorld().dropItem(e.getBlock().getLocation(), ss.clone());
-                      
                     }
                 }
             }
+            return true;
         });
         return this;
     }
@@ -78,6 +79,7 @@ public class CardBuilder {
         card.addDescription("Encanta "+e.getName()+" lvl "+level);
         card.addHook((CardHook<PutCardInItemEvent>) ev -> {
             ev.getItem().addUnsafeEnchantment(e, level);
+            return true;
         });
         return this;
     }
@@ -86,8 +88,7 @@ public class CardBuilder {
         card.setDescription("Recebe " + qtd + " " + mat.name());
         card.addHook((CardHook<UseCardEvent>) e -> {
             e.getPlayer().getInventory().addItem(new ItemStack(mat, qtd));
-           
-
+            return true;
         });
         return this;
     }

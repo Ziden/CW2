@@ -1,6 +1,6 @@
 name: CardWars
 version: 0.4
-main: cardwars.CardwarsPlugin
+main: truco.Cardwars
 api-version: 1.17
 commands: 
 softdepend: []

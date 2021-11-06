@@ -5,17 +5,10 @@
  */
 package truco.toscow;
 
-import java.util.ArrayList;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
 /**
  *
  * @author gabri
  */
-public class Toscow {
-    
-    
+public class ToscowDeckListener {
     
 }

@@ -25,7 +25,7 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
 import truco.CardGenerator;
-import truco.album.CardAlbum;
+import truco.album.Album;
 import truco.album.TableGenerator;
 import truco.album.TableGenerator.Alignment;
 import truco.cards.CardRarity;
@@ -38,7 +38,7 @@ public class AlbumCmd extends MainCmd {
         super("album", ExecutorType.OP);
 
         this.addSubcommand("ver", ExecutorType.OP, (p, args) -> {
-            CardAlbum album = Cardwars.getAlbum(p);
+            Album album = Cardwars.getAlbum(p);
             if (args.length == 0) {
                 p.sendMessage("§2Cartas: §a" + album.getCardIds().size() + "§2/§a" + Cardwars.getCardStorage().getAllCards().size());
                 p.sendMessage("§2Seu album de cartas tem §a" + album.getCardIds().size() / PAG_SIZE + 1 + " §2paginas");
@@ -55,7 +55,7 @@ public class AlbumCmd extends MainCmd {
                 return;
             }
             p.setItemInHand(null);
-            CardAlbum album = Cardwars.getAlbum(p);
+            Album album = Cardwars.getAlbum(p);
             album.addCard(c);
             p.sendMessage("§2Carta adicionada no album. Agora voce tem "+album.getCardIds().size()+" cartas");
         });
@@ -71,7 +71,7 @@ public class AlbumCmd extends MainCmd {
                 p.sendMessage("§2Esta carta nao existe");
                 return;
             }
-            CardAlbum album = Cardwars.getAlbum(p);
+            Album album = Cardwars.getAlbum(p);
             if(album.removeCard(c)) {
                 p.getInventory().addItem(c.toItemStack(p));
                 p.sendMessage("§2Voce pegou a carta "+c.getName());
@@ -79,7 +79,7 @@ public class AlbumCmd extends MainCmd {
         });
     }
 
-    private void mostraAlbum(Player p, String[] args, CardAlbum album) {
+    private void mostraAlbum(Player p, String[] args, Album album) {
 
         TableGenerator tg = new TableGenerator(Alignment.LEFT, Alignment.LEFT);
         int pagina = 0;

@@ -24,16 +24,21 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import truco.album.AlbumStorage;
-import truco.album.CardAlbum;
+import truco.album.Album;
 import truco.cards.CardSerializer;
 import truco.commands.list.AlbumCmd;
+import truco.commands.list.ToscowCmd;
+import truco.toscow.ToscowStorage;
 
 public class Cardwars extends JavaPlugin {
 
     public static Logger log;
-    public static JavaPlugin _i;
+    private static JavaPlugin _i;
+    
+    private static ToscowStorage games;
     private static CardStorage cards;
     private static AlbumStorage albums;
+    
     private static CommandMap cmap;
     private static PluginConfig config;
 
@@ -47,10 +52,12 @@ public class Cardwars extends JavaPlugin {
         cmap = (CommandMap) ((CraftServer) Bukkit.getServer()).getCommandMap();
         addCommand(new CardsCmd());
         addCommand(new AlbumCmd());
+        addCommand(new ToscowCmd());
         Bukkit.getServer().getPluginManager().registerEvents(new CardListener(), this);
 
         cards = new CardStorage();
         albums = new AlbumStorage();
+        games = new ToscowStorage();
         HashSet<Card> savedCards = CardSerializer.DeserializeCards(config);
         if (savedCards.size() == 0) {
             savedCards = CardGenerator.GenerateFromMaterials(config);
@@ -64,8 +71,16 @@ public class Cardwars extends JavaPlugin {
         return cards;
     }
     
-    public static CardAlbum getAlbum(Player p) {
+    public static Album getAlbum(Player p) {
         return albums.getAlbum(p);
+    }
+    
+    public static ToscowStorage getToscowStorage() {
+        return games;
+    }
+    
+    public static File getPluginFolder() {
+        return _i.getDataFolder();
     }
 
     public void addCommand(MainCmd cmd) {

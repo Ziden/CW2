@@ -15,11 +15,13 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 import net.jodah.typetools.TypeResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -30,7 +32,7 @@ public class Card {
 
     private int level = 1;
     private String name;
-    private int[] powers = new int[] {1,2,3,4};
+    private int[] powers = new int[]{0, 0, 0, 0};
     private UUID id;
     private CardRarity cardRarity;
     private List<String> desc;
@@ -101,20 +103,24 @@ public class Card {
     public int getCooldownSeconds() {
         return cooldownSeconds;
     }
-    
-    
+
     public void setPower(BlockFace face, int p) {
-        if(face == BlockFace.UP)
+        if (face == BlockFace.UP) {
             powers[0] = p;
-        else if(face == BlockFace.WEST)
+        } else if (face == BlockFace.WEST) {
             powers[1] = p;
-        else if(face == BlockFace.EAST)
+        } else if (face == BlockFace.EAST) {
             powers[2] = p;
-        else if(face == BlockFace.DOWN)
+        } else if (face == BlockFace.DOWN) {
             powers[3] = p;
+        }
     }
-    
-    public int [] getPowers() {
+
+    public void setPower(int i, int p) {
+        powers[i] = p;
+    }
+
+    public int[] getPowers() {
         return powers;
     }
 
@@ -183,7 +189,7 @@ public class Card {
     }
 
     public static Card fromItemStack(ItemStack ss) {
-        if (ss.getType() != Material.FILLED_MAP) {
+        if (ss == null || ss.getType() != Material.FILLED_MAP) {
             return null;
         }
 
@@ -199,7 +205,6 @@ public class Card {
         return null;
     }
 
-
     public ItemStack toItemStack(Player p) {
         ItemStack ss = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) ss.getItemMeta();
@@ -213,7 +218,7 @@ public class Card {
         lore.add("§a| §2  " + powers[0]);
         lore.add("§a| §2" + powers[1] + "   " + powers[2]);
         lore.add("§a| §2  " + powers[3]);
-          for (String d : this.desc) {
+        for (String d : this.desc) {
             lore.add("§a| §2" + d);
         }
         meta.setLore(lore);
@@ -230,6 +235,15 @@ public class Card {
         view.setTrackingPosition(false);
         view.setLocked(true);
         meta.setMapView(view);
+
+        if (cardRarity == CardRarity.Incomum) {
+            meta.setColor(Color.GREEN);
+        } else if (cardRarity == CardRarity.Rara) {
+            meta.setColor(Color.BLUE);
+        } else {
+            meta.setColor(Color.WHITE);
+        }
+        meta.getItemFlags().add(ItemFlag.HIDE_ATTRIBUTES);
         ss.setItemMeta(meta);
         return ss;
     }

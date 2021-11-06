@@ -14,12 +14,16 @@ import org.bukkit.entity.Player;
  * @author gabri
  */
 public class AlbumStorage {
-        // todo: SQL
-    public HashMap<UUID, CardAlbum> _albums = new HashMap<UUID, CardAlbum>();
 
-    public CardAlbum getAlbum(Player p) {
+    public HashMap<UUID, Album> _albums = new HashMap<UUID, Album>();
+
+    public Album getAlbum(Player p) {
         if(!_albums.containsKey(p.getUniqueId()))
-            _albums.put(p.getUniqueId(), new CardAlbum());
+            _albums.put(p.getUniqueId(), new Album());
         return _albums.get(p.getUniqueId());
+    }
+    
+    public void saveAlbum(Player p, Album b) {
+         _albums.put(p.getUniqueId(), b);
     }
 }

@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CardListener {
+public abstract class SubCmd {
 
     public String cmd;
     public ExecutorType type;
     public String permission = null;
-    protected List<CardListener> subs = new ArrayList<CardListener>();
+    protected List<SubCmd> subs = new ArrayList<SubCmd>();
 
-    public CardListener(String cmd, ExecutorType type) {
+    public SubCmd(String cmd, ExecutorType type) {
         this.cmd = cmd;
         this.type = type;
     }
@@ -23,7 +23,7 @@ public abstract class CardListener {
     protected void showSubCommands(CommandSender cs, String mainCmd) {
         cs.sendMessage(ChatColor.YELLOW + "|________________oO " + cmd + " Oo_____________");
         cs.sendMessage(ChatColor.YELLOW + "|");
-        for (CardListener cmd : subs) {
+        for (SubCmd cmd : subs) {
             if (cmd.type != ExecutorType.OP) {
                 cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.GREEN + " - /" + mainCmd + " " + cmd.cmd);
             } else if (cs.isOp()) {
@@ -75,7 +75,7 @@ public abstract class CardListener {
 
     public void executeBase(CommandSender cs, String[] args, String mainCmd) {
         if (args.length >= 2) {
-            for (CardListener args0 : subs) {
+            for (SubCmd args0 : subs) {
                 if (args0.cmd.equalsIgnoreCase(args[1])) {
                     args0.executeSubCmd(cs, args);
                     type = args0.type;

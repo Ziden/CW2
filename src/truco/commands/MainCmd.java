@@ -18,7 +18,7 @@ public abstract class MainCmd extends Command {
     private CommandExecutor exe = null;
     ExecutorType tipo;
     public String permission = null;
-    protected List<CardListener> subs = new ArrayList<CardListener>();
+    protected List<SubCmd> subs = new ArrayList<SubCmd>();
 
     public MainCmd(String name, ExecutorType c) {
         super(name);
@@ -28,7 +28,7 @@ public abstract class MainCmd extends Command {
     public void showSubCommands(CommandSender cs) {
         cs.sendMessage(ChatColor.YELLOW + ".________________oO " + getName() + " Oo_____________");
         cs.sendMessage(ChatColor.YELLOW + "|");
-        for (CardListener cmd : subs) {
+        for (SubCmd cmd : subs) {
             if (cmd.type != ExecutorType.OP) {
                 cs.sendMessage(ChatColor.YELLOW + "|" + ChatColor.GREEN + " - /" + getName() + " " + cmd.cmd);
             } else if (cs.isOp()) {
@@ -39,7 +39,7 @@ public abstract class MainCmd extends Command {
     }
 
     public void addSubcommand(String cmd, ExecutorType type, CmdExecutor executor) {
-        this.subs.add(new CardListener(cmd, ExecutorType.OP) {
+        this.subs.add(new SubCmd(cmd, ExecutorType.OP) {
             @Override
             public void execute(CommandSender cs, String[] args) {
                 executor.execute((Player) cs, args);
@@ -53,7 +53,7 @@ public abstract class MainCmd extends Command {
 
     protected void usouComandoBase(CommandSender cs, String[] args) {
         if (args.length >= 1) {
-            for (CardListener args0 : subs) {
+            for (SubCmd args0 : subs) {
                 if (args0.cmd.equalsIgnoreCase(args[0])) {
                     args0.executeSubCmd(cs, Arrays.copyOfRange(args, 1, args.length));
                 }

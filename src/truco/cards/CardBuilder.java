@@ -12,6 +12,7 @@ import truco.cards.CardRarity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Function;
 import org.bukkit.Material;
@@ -29,6 +30,7 @@ public class CardBuilder {
 
     private HashSet<Card> built = new HashSet<Card>();
 
+    private Random rng = new Random();
     private Card card;
 
     public Card getBuildingCard() {
@@ -46,6 +48,11 @@ public class CardBuilder {
         createCard(name, CardRarity.Comum, desc);
         return this;
     }
+    
+    public CardBuilder randomOnePower(int n) {
+        card.setPower(rng.nextInt(4), n);
+        return this;
+    }
 
     public CardBuilder createCard(String name, CardRarity rarity, String... desc) {
         if (card != null) {
@@ -56,6 +63,7 @@ public class CardBuilder {
         card.setCardRarity(rarity);
         card.setDescription(desc);
         card.setId(UUID.randomUUID());
+        randomOnePower(1);
         return this;
     }
 

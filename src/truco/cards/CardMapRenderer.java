@@ -29,6 +29,24 @@ import truco.Cardwars;
 
 public class CardMapRenderer extends MapRenderer {
 
+    // map size
+    private static final int CARD_SIZE_X = 128;
+    private static final int CARD_SIZE_Y = 128;
+
+    private static final int MID_X = CARD_SIZE_X / 2;
+    private static final int MID_Y = CARD_SIZE_Y / 2;
+
+    private static final int TOP_BORDER_SIZE = 10;
+    private static final int BOT_BORDER_SIZE = 10;
+    private static final int SIDE_BORDER_SIZE = 10;
+
+    private static final int CENTER_SIZE_X = CARD_SIZE_X - (SIDE_BORDER_SIZE * 2);
+    private static final int CENTER_SIZE_Y = CARD_SIZE_Y - TOP_BORDER_SIZE - BOT_BORDER_SIZE;
+    private static final int BG_REPETITION = 4;
+
+    private static final int BG_SIZE_X = CENTER_SIZE_X / BG_REPETITION;
+    private static final int BG_SIZE_Y = CENTER_SIZE_Y / BG_REPETITION;
+
     private static HashMap<Card, CardMapRenderer> _renderers = new HashMap<Card, CardMapRenderer>();
     private Card card;
     private MapView bakedView;
@@ -42,22 +60,21 @@ public class CardMapRenderer extends MapRenderer {
         if (bakedView != null) {
             return;
         }
-        /*
-        if(loadCardImageFromFile(mc)) {
+
+        if (loadCardImageFromFile(mc)) {
             Cardwars.log.info("Lendo carta de " + player.getName());
             bakedView = mv;
             return;
         }
-         */
+
         Cardwars.log.info("Renderizando carta " + card.getName());
         drawFrame(mc);
         drawBackground(mc);
-        drawRarityIcon(mc);
+        drawRarityIcons(mc);
         drawPowers(mc);
-        drawTitle(mc);
         drawItems(mc);
         bakedView = mv;
-        // saveCardImageToFile(mc);
+        saveCardImageToFile(mc);
     }
 
     public static CardMapRenderer getRenderer(Card c) {
@@ -70,6 +87,7 @@ public class CardMapRenderer extends MapRenderer {
          */
     }
 
+    //116 - 110
     public static MapView GetView(Card c) {
         return getRenderer(c).getView();
     }
@@ -78,52 +96,59 @@ public class CardMapRenderer extends MapRenderer {
         return bakedView;
     }
 
-    private void drawPowers(MapCanvas mc) {
-        drawItem(6, 64 - 8, mc, Material.SMOOTH_STONE, 16); // left
-        drawItem(128 - 16 - 6, 64 - 8, mc, Material.SMOOTH_STONE, 16); // right
-        drawItem(64 - 8, 16, mc, Material.SMOOTH_STONE, 16); // top
-        drawItem(64 - 8, 128 - 16 - 8, mc, Material.SMOOTH_STONE, 16); // bot
-
-        mc.drawText(6+5, 64 - 8+5, MinecraftFont.Font, ""+card.getPowers()[1]);
-        mc.drawText(128 - 16 - 6+5, 64 - 8+5, MinecraftFont.Font, ""+card.getPowers()[2]);
-        mc.drawText(64 - 8+5, 16+5, MinecraftFont.Font, ""+card.getPowers()[0]);
-        mc.drawText(64 - 8+5, 128 - 16 - 8+5, MinecraftFont.Font, ""+card.getPowers()[3]);
-    }
-
     private void drawBackground(MapCanvas mc) {
         if (card.getImage().getBackground() == null) {
             return;
         }
-        for (int x = 0; x < 4; x++) {
-            for (int y = 0; y < 4; y++) {
-                drawImage(x * 29 + 6, y * 26 + 16, mc, "item" + File.separator + card.getImage().getBackground().name().toLowerCase() + ".png", 29, 26,
+        for (int x = 0; x < BG_REPETITION; x++) {
+            for (int y = 0; y < BG_REPETITION; y++) {
+                int xpos = x * BG_SIZE_X + SIDE_BORDER_SIZE;
+                int ypos = y * BG_SIZE_Y + TOP_BORDER_SIZE;
+                drawImage(xpos, ypos, mc, "item" + File.separator + card.getImage().getBackground().name().toLowerCase() + ".png", BG_SIZE_X, BG_SIZE_Y,
                         card.getImage().getBackgroundColor()
                 );
             }
         }
     }
 
-    private void drawRarityIcon(MapCanvas mc) {
+    private void drawRarityBorders(MapCanvas mc, Material m) {
+        drawItem(1, 1, mc, m, 8);
+        drawItem(CARD_SIZE_X - 1 - 8, CARD_SIZE_Y - 1 - 8, mc, m, 8);
+        drawItem(CARD_SIZE_X - 1 - 8, 1, mc, m, 8);
+        drawItem(1, CARD_SIZE_Y - 1 - 8, mc, m, 8);
+    }
+
+    private void drawRarityIcons(MapCanvas mc) {
         if (card.getCardRarity() == CardRarity.Comum) {
-            drawItem(63, 128 - 6, mc, Material.IRON_BLOCK, 5);
+            drawRarityBorders(mc, Material.SMOOTH_STONE);
         } else if (card.getCardRarity() == CardRarity.Incomum) {
-            drawItem(63, 128 - 6, mc, Material.EMERALD_BLOCK, 5);
+            drawRarityBorders(mc, Material.EMERALD_BLOCK);
         } else if (card.getCardRarity() == CardRarity.Rara) {
-            drawItem(63, 128 - 6, mc, Material.LAPIS_BLOCK, 5);
+            drawRarityBorders(mc, Material.LAPIS_BLOCK);
         }
     }
 
     private void drawItems(MapCanvas mc) {
         if (card.getCardRarity() == CardRarity.Rara) {
-            drawItem(32 - 25, 55, mc, card.getImage().getItem());
-            drawItem(32 + 25, 55, mc, card.getImage().getItem());
+            drawItem(MID_X - 32 - 20, MID_Y - 32 + 20, mc, card.getImage().getItem());
+            drawItem(MID_X - 32 + 20, MID_Y - 32 + 20, mc, card.getImage().getItem());
         }
-        drawItem(32, 32, mc, card.getImage().getItem());
-
+        drawItem(MID_X - 32, MID_Y - 32, mc, card.getImage().getItem(), 64);
     }
 
-    private void drawTitle(MapCanvas mc) {
-        mc.drawText(5, 5, MinecraftFont.Font, card.getName());
+    private void drawPowers(MapCanvas mc) {
+        if (card.getPowers()[0] > 0) {
+            drawItem(MID_X - 8, TOP_BORDER_SIZE, mc, Material.SMOOTH_STONE, 16); // top
+        }
+        if (card.getPowers()[1] > 0) {
+            drawItem(SIDE_BORDER_SIZE, MID_Y - 8, mc, Material.SMOOTH_STONE, 16); // left
+        }
+        if (card.getPowers()[2] > 0) {
+            drawItem(CARD_SIZE_X - SIDE_BORDER_SIZE - 16, MID_Y - 8, mc, Material.SMOOTH_STONE, 16); // right
+        }
+        if (card.getPowers()[3] > 0) {
+            drawItem(MID_X - 8, CARD_SIZE_X - 16 - BOT_BORDER_SIZE, mc, Material.SMOOTH_STONE, 16); // bot
+        }
     }
 
     private void drawFrame(MapCanvas mc) {
@@ -143,7 +168,7 @@ public class CardMapRenderer extends MapRenderer {
     private void drawImage(int x, int y, MapCanvas mc, String imagePath, int scaleX, int scaleY, Color c) {
         BufferedImage img = null;
         try {
-            File f = new File(Cardwars._i.getDataFolder(), File.separator + "textures" + File.separator + imagePath);
+            File f = new File(Cardwars.getPluginFolder(), File.separator + "textures" + File.separator + imagePath);
             img = ImageIO.read(f);
             img = scale(img, scaleX, scaleY, c);
             drawImageWithAlpha(x, y, mc, img);
@@ -178,9 +203,9 @@ public class CardMapRenderer extends MapRenderer {
             privateField = CraftMapCanvas.class.getDeclaredField("buffer");
             privateField.setAccessible(true);
             byte[] buffer = (byte[]) privateField.get(canvas);
-            String fileName = card.getName().replaceAll("[\\\\/:*?\"<>|]", "") + ".bin";
-            File dir = new File(Cardwars._i.getDataFolder(), File.separator + "cardimages");
-            File f = new File(Cardwars._i.getDataFolder(), File.separator + "cardimages" + File.separator + fileName);
+            String fileName = card.getName().replaceAll("[\\\\/:*?\"<>|]", "") + ".card";
+            File dir = new File(Cardwars.getPluginFolder(), File.separator + "cardimages");
+            File f = new File(Cardwars.getPluginFolder(), File.separator + "cardimages" + File.separator + fileName);
             if (!f.exists()) {
                 dir.mkdirs();
                 f.createNewFile();
@@ -196,8 +221,8 @@ public class CardMapRenderer extends MapRenderer {
         try {
             privateField = CraftMapCanvas.class.getDeclaredField("buffer");
             privateField.setAccessible(true);
-            String fileName = card.getName().replaceAll("[\\\\/:*?\"<>|]", "") + ".bin";
-            File f = new File(Cardwars._i.getDataFolder(), File.separator + "cardimages" + File.separator + fileName);
+            String fileName = card.getName().replaceAll("[\\\\/:*?\"<>|]", "") + ".card";
+            File f = new File(Cardwars.getPluginFolder(), File.separator + "cardimages" + File.separator + fileName);
             if (!f.exists()) {
                 return false;
             }

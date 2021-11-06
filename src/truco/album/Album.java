@@ -26,11 +26,9 @@ import truco.cards.Card;
  *
  * @author gabri
  */
-public class CardAlbum {
+public class Album {
 
-    // inventory slot - card
-    private HashMap<UUID, Integer> cards = new HashMap<UUID, Integer>() {
-    };
+    private HashMap<UUID, Integer> cards = new HashMap<UUID, Integer>();
 
     public void addCard(Card c) {
         int amt = cards.getOrDefault(c.getId(), 0);

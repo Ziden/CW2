@@ -25,51 +25,27 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
 import truco.CardGenerator;
-import truco.album.CardAlbum;
+import truco.album.Album;
 import truco.album.TableGenerator;
 import truco.album.TableGenerator.Alignment;
 import truco.cards.CardRarity;
+import truco.toscow.ToscowGame;
 
-public class ToscoCmd extends MainCmd {
+public class ToscowCmd extends MainCmd {
 
     public static final int PAG_SIZE = 20;
 
-    public ToscoCmd() {
+    public ToscowCmd() {
         super("toscow", ExecutorType.OP);
 
         this.addSubcommand("criar", ExecutorType.OP, (p, args) -> {
+            ToscowGame game = new ToscowGame(p.getLocation());
+            Cardwars.getToscowStorage().registerGame(game);
             
         });
 
     }
 
-    private void mostraAlbum(Player p, String[] args, CardAlbum album) {
-
-        TableGenerator tg = new TableGenerator(Alignment.LEFT, Alignment.LEFT);
-        int pagina = 0;
-        pagina = Integer.valueOf(args[0]);
-
-        List<UUID> cards = new ArrayList<UUID>(album.getCardIds());
-        int pags = cards.size() / PAG_SIZE + 1;
-        if (cards.size() > PAG_SIZE) {
-            int from = pagina * PAG_SIZE;
-            int to = pagina * PAG_SIZE + PAG_SIZE;
-            if (cards.size() < from) {
-                return;
-            }
-            if (cards.size() < to) {
-                to = cards.size() - 1;
-            }
-            cards = cards.subList(from, to);
-        }
-        for (UUID u : cards) {
-            Card c = Cardwars.getCardStorage().getCard(u);
-            tg.addRow(c.getColoredName());
-        }
-
-        for (String s : tg.generate()) {
-            p.sendMessage(s);
-        }
-    }
+  
 
 }

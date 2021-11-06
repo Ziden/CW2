@@ -20,7 +20,7 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
 import truco.CardGenerator;
-import truco.album.CardAlbum;
+import truco.album.Album;
 import truco.cards.CardRarity;
 
 public class CardsCmd extends MainCmd {
@@ -61,7 +61,7 @@ public class CardsCmd extends MainCmd {
         });
 
         this.addSubcommand("album", ExecutorType.OP, (p, args) -> {
-            p.getInventory().addItem(CardAlbum.createItemStack(p));
+            p.getInventory().addItem(Album.createItemStack(p));
         });
 
         this.addSubcommand("pegar", ExecutorType.OP, (p, args) -> {

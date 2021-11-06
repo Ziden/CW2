@@ -8,6 +8,7 @@ import truco.cards.CardHook;
 import truco.cards.CardRarity;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -17,22 +18,22 @@ import truco.cards.CardSerializer;
 public class CardGenerator {
 
     public static Material[] BGS_COMMON = new Material[]{
-        Material.DIRT, 
+        Material.DIRT,
         Material.STONE,
         Material.WHITE_WOOL,
         Material.OAK_LOG,
         Material.OAK_PLANKS,
-        Material.STONE_BRICKS, 
+        Material.STONE_BRICKS,
         Material.COBBLESTONE
     };
-    
-    public static String [] SUFIXOS = new String [] {
-         "Terrada", 
+
+    public static String[] SUFIXOS = new String[]{
+        "Terrada",
         "Pedrada",
         "Lanzada",
         "Torada",
         "Tabuada",
-        "Tijolada", 
+        "Tijolada",
         "Rochada"
     };
 
@@ -42,7 +43,8 @@ public class CardGenerator {
         List<Material> icons = new ArrayList<Material>();
         List<Material> backgrounds = new ArrayList<Material>();
         HashMap<String, Boolean> names = new HashMap<String, Boolean>();
-
+        Random rnd = new Random();
+        
         for (Material m : Material.values()) {
             if (images.contains(m.name().toLowerCase())) {
                 if (!m.isSolid()) {
@@ -57,14 +59,17 @@ public class CardGenerator {
         for (Material m : icons) {
             for (int bgi = 0; bgi < BGS_COMMON.length; bgi++) {
                 Material bg = BGS_COMMON[bgi];
-                String name = cfg.getTranslatedName(m) + " "+SUFIXOS[bgi];
+                String name = cfg.getTranslatedName(m) + " " + SUFIXOS[bgi];
                 if (names.containsKey(name)) {
-                    name = m.name()+" "+bgi;
+                    name = m.name() + " " + bgi;
                 }
 
                 builder.createCard(name, "Teste")
                         .withImage(m)
                         .withBackground(bg);
+                
+                if(rnd.nextInt(3)==1)
+                    builder.randomOnePower(1);
 
                 CardSerializer.SerializeCard(builder.getBuildingCard(), cfg);
                 names.put(name, true);
@@ -91,6 +96,40 @@ public class CardGenerator {
             builder.createCard(name, CardRarity.Incomum, "Teste")
                     .withImage(m)
                     .withBackground(bg);
+            
+            builder.randomOnePower(1);
+            if(rnd.nextInt(3)==1)
+                    builder.randomOnePower(1);
+            
+            names.put(name, true);
+            CardSerializer.SerializeCard(builder.getBuildingCard(), cfg);
+            System.out.println("Gerada carta incomum " + name);
+        }
+        
+        // More uncommons
+        for (Material m : icons) {
+            String name = cfg.getTranslatedName(m) + " Forte";
+            if (names.containsKey(name)) {
+                name = m.name() + " Forte";
+            }
+            if (names.containsKey(name)) {
+                continue;
+            }
+
+            Material bg = backgrounds
+                    .stream()
+                    .skip(ThreadLocalRandom.current()
+                            .nextInt(backgrounds.size()))
+                    .findAny().get();
+            
+            builder.createCard(name, CardRarity.Incomum, "Teste")
+                    .withImage(m)
+                    .withBackground(bg);
+            
+            builder.randomOnePower(1);
+            if(rnd.nextInt(3)==1)
+                    builder.randomOnePower(1);
+            
             names.put(name, true);
             CardSerializer.SerializeCard(builder.getBuildingCard(), cfg);
             System.out.println("Gerada carta incomum " + name);
@@ -115,6 +154,10 @@ public class CardGenerator {
             builder.createCard(name, CardRarity.Rara, "Teste")
                     .withImage(m)
                     .withBackground(bg);
+            
+            builder.randomOnePower(1);
+            builder.randomOnePower(1);
+            
             names.put(name, true);
             CardSerializer.SerializeCard(builder.getBuildingCard(), cfg);
             System.out.println("Gerada carta rara " + name);
@@ -128,7 +171,7 @@ public class CardGenerator {
     }
 
     // Como um outro plugin geraria as cartas
-    public static HashSet<Card> Generate() {
+    public static HashSet<Card> generateCustomCards() {
         return new CardBuilder()
                 .createCard("Ferreiro", CardRarity.Comum).thatGivesItems(Material.IRON_ORE, 64)
                 .createCard("Minerador", CardRarity.Incomum).thatGivesItems(Material.DIAMOND_PICKAXE, 1)

@@ -101,7 +101,7 @@ public class PluginConfig {
     public static HashSet<String> getAllImageNames() {
         if (_images == null) {
             _images = new HashSet<String>();
-            searchForImages(new File[]{Cardwars._i.getDataFolder()});
+            searchForImages(new File[]{Cardwars.getPluginFolder()});
         }
         return _images;
     }
